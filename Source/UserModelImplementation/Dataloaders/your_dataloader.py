@@ -2,9 +2,9 @@
 import time
 import JackFramework as jf
 # import UserModelImplementation.user_define as user_def
+from .data_set import BodyReconstructionDataset
 
-
-class YourDataloader(jf.UserTemplate.DataHandlerTemplate):
+class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
     """docstring for DataHandlerTemplate"""
 
     def __init__(self, args: object) -> object:
