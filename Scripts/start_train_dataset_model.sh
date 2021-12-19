@@ -13,23 +13,23 @@ if [ -d "${tensorboard_folder}" ]; then
 fi
 
 echo "Begin to train the model!"
-CUDA_VISIBLE_DEVICES=4,5,6,7 nohup python -u Source/main.py \
+CUDA_VISIBLE_DEVICES=0 python -u Source/main.py \
                         --mode train \
-                        --batchSize 2 \
-                        --gpu 4 \
-                        --trainListPath ./Datasets/scene_flow_training_list.csv \
+                        --batchSize 1 \
+                        --gpu 1 \
+                        --trainListPath ./Datasets/thuman_training_list.csv \
                         --imgWidth 512 \
                         --imgHeight 256 \
                         --dataloaderNum 24 \
                         --maxEpochs 200 \
-                        --imgNum 35454 \
+                        --imgNum 59 \
                         --sampleNum 1 \
                         --log ${tensorboard_folder} \
                         --lr 0.001 \
-                        --dist True \
-                        --modelName your_model \
+                        --dist false \
+                        --modelName BodyReconstruction \
                         --port ${dist_port} \
-                        --dataset dataset_name > TrainRun.log 2>&1 &
+                        --dataset thuman2.0 > TrainRun.log 2>&1 &
 echo "You can use the command (>> tail -f TrainRun.log) to watch the training process!"
 
 echo "Start the tensorboard at port:" ${tensorboard_port}
@@ -37,5 +37,5 @@ nohup tensorboard --logdir ${tensorboard_folder} --port ${tensorboard_port} \
                         --bind_all --load_fast=false > Tensorboard.log 2>&1 &
 echo "All processes have started!"
 
-echo "Begin to watch TrainRun.log file!"
-tail -f TrainRun.log
+#echo "Begin to watch TrainRun.log file!"
+#tail -f TrainRun.log

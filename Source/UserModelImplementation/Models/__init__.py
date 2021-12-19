@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*
 import JackFramework as jf
 
-from .Your_Model.inference import YourModelInterface
+from .BodyReconstruction.inference import BodyReconstructionInterface
 
 
 def model_zoo(args: object, name: str) -> object:
-    for case in jf.Switch(name):
-        if case('YourMode'):
-            jf.log.info("Enter the YourMode model")
-            model = YourModelInterface(args)
+    for case in jf.Switch('BodyReconstruction'):
+        if case('BodyReconstruction'):
+            jf.log.info("Enter the BodyReconstruction model")
+            model = BodyReconstructionInterface(args)
             break
         if case(''):
             model = None

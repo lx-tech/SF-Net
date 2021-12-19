@@ -6,6 +6,7 @@ from torch.utils.data.dataset import Dataset
 
 import pandas as pd
 import JackFramework as jf
+import cv2
 
 
 
@@ -71,7 +72,7 @@ class BodyReconstructionDataset(Dataset):
             [color_img, depth_img, color_gt, depth_gt],
             color_img.shape[1], color_img.shape[0], width, hight)
 
-        color_img = jf.DataAugmentation.standardize(color_img)
+        #color_img = jf.DataAugmentation.standardize(color_img)
 
         color_img = color_img.transpose(2, 0, 1)
         depth_img = depth_img.transpose(2, 0, 1)
@@ -88,13 +89,23 @@ class BodyReconstructionDataset(Dataset):
         color_img = np.array(jf.ImgIO.read_img(color_img_path))
         depth_img = np.array(jf.ImgIO.read_img(depth_img_path))
 
-        color_img = jf.DataAugmentation.standardize(color_img)
-        depth_img = jf.DataAugmentation.standardize(depth_img)
+        #color_img = jf.DataAugmentation.standardize(color_img)
+        #depth_img = jf.DataAugmentation.standardize(depth_img)
 
         return color_img, depth_img
     
     def __len__(self):
         return len(self.__data_steam)
+
+    def save_output(filename, output):
+        image = np.squeeze(output[0].detach().cpu().numpy())
+        cv2.imwrite(filename, image.astype(np.uint16))
+
+
+    def save_output_color(filename, output):
+        image = output[0].permute(1, 2, 0).detach().cpu().numpy()
+        image = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_RGB2BGR)
+        cv2.imwrite(filename, image)
 
 def debug_main():
     import argparse
@@ -115,7 +126,7 @@ def debug_main():
     data_set = BodyReconstructionDataset(args, './Datasets/thuman_training_list.csv', True)
     training_dataloader = torch.utils.data.DataLoader(
         data_set,
-        batch_size=1,
+        batch_size=2,
         shuffle=False,
         num_workers=2,
         pin_memory=True,

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import JackFramework as jf
 
-from .your_dataloader import YourDataloader
+from .dataloader import BodyDataloader
 
 
 def dataloaders_zoo(args: object, name: str) -> object:
     for case in jf.Switch(name):
-        if case('YourDataloader'):
+        if case('thuman2.0'):
             jf.log.info("Enter the your dataloader")
-            dataloader = YourDataloader(args)
+            dataloader = BodyDataloader(args)
             break
         if case(''):
             dataloader = None
