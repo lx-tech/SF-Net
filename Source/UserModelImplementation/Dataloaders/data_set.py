@@ -11,6 +11,9 @@ import cv2
 
 
 class BodyReconstructionDataset(Dataset):
+    _DEPTH_UNIT = 1000.0
+    _DEPTH_DIVIDING = 255.0
+
     def __init__(self, args: object, list_path: str,
                  is_training: bool = False) -> None:
         self.__args = args
@@ -64,15 +67,22 @@ class BodyReconstructionDataset(Dataset):
         hight = args.imgHeight
 
         color_img = jf.ImgIO.read_img(color_img_path)
-        depth_img = jf.ImgIO.read_img(depth_img_path)
+        depth_img = self._read_png_depth(depth_img_path)
         color_gt = jf.ImgIO.read_img(color_gt_path)
-        depth_gt = jf.ImgIO.read_img(depth_gt_path)
+        depth_gt = self._read_png_depth(depth_gt_path)
 
         color_img, depth_img, color_gt, depth_gt = jf.DataAugmentation.random_crop(
             [color_img, depth_img, color_gt, depth_gt],
             color_img.shape[1], color_img.shape[0], width, hight)
 
         #color_img = jf.DataAugmentation.standardize(color_img)
+        #color_gt = jf.DataAugmentation.standardize(color_gt)
+
+        color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
+        color_gt = color_gt / float(BodyReconstructionDataset._DEPTH_DIVIDING)
+
+        #color_img = jf.DataAugmentation.normalize(color_img)
+        #color_gt = jf.DataAugmentation.normalize(color_gt)
 
         color_img = color_img.transpose(2, 0, 1)
         depth_img = depth_img.transpose(2, 0, 1)
@@ -86,26 +96,27 @@ class BodyReconstructionDataset(Dataset):
                            depth_gt_path: str) -> object:
         args = self.__args
 
-        color_img = np.array(jf.ImgIO.read_img(color_img_path))
-        depth_img = np.array(jf.ImgIO.read_img(depth_img_path))
+        color_img = jf.ImgIO.read_img(color_img_path)
+        depth_img = self._read_png_depth(depth_img_path)
 
         #color_img = jf.DataAugmentation.standardize(color_img)
-        #depth_img = jf.DataAugmentation.standardize(depth_img)
+        color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
+
+        color_img = color_img.transpose(2, 0, 1)
+        depth_img = depth_img.transpose(2, 0, 1)
 
         return color_img, depth_img
     
     def __len__(self):
         return len(self.__data_steam)
 
-    def save_output(filename, output):
-        image = np.squeeze(output[0].detach().cpu().numpy())
-        cv2.imwrite(filename, image.astype(np.uint16))
-
-
-    def save_output_color(filename, output):
-        image = output[0].permute(1, 2, 0).detach().cpu().numpy()
-        image = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_RGB2BGR)
-        cv2.imwrite(filename, image)
+    @staticmethod
+    def _read_png_depth(path: str) -> torch.tensor:
+        gt_depth = jf.ImgIO.read_img(path)
+        #gt_depth = np.squeeze(gt_depth, 2)
+        gt_depth = np.ascontiguousarray(
+            gt_depth, dtype=np.float32) / float(BodyReconstructionDataset._DEPTH_UNIT)
+        return gt_depth
 
 def debug_main():
     import argparse
@@ -140,6 +151,11 @@ def debug_main():
         print(batch_data[2].size())
         print(batch_data[3].size())
         print('___________')
+        print(batch_data[0][:,:,120,220])
+        print(batch_data[2][:,:,120,220])
+        print(batch_data[1][:,:,120,220])
+        print(batch_data[3][:,:,120,220])
+    
 
 
 if __name__ == '__main__':

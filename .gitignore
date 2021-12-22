@@ -1,10 +1,13 @@
 ResultImg/
 Submission/
 Checkpoint/
-log/
+*log/
+*Log/
 Example/
-Result*/
+*Result*/
 /*__pycache__*/
 sftp-config*.json
 *.pyc
 STTStereo.sublime-workspace
+*.pub
+*.log

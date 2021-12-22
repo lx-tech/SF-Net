@@ -3,7 +3,7 @@ import time
 import JackFramework as jf
 # import UserModelImplementation.user_define as user_def
 from .data_set import BodyReconstructionDataset
-#import data_saver
+from .data_saver import DataSaver
 
 # traing
 ID_COLOR = 0
@@ -21,7 +21,7 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         self.__result_str = jf.ResultStr()
         self.__train_dataset = None
         self.__val_dataset = None
-        #self.__saver = StereoSaver(args)
+        self.__saver = DataSaver(args)
         self.__start_time = 0
         
 
@@ -42,7 +42,7 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
             # return input_data_list, label_data_list
              return [batch_data[ID_COLOR], batch_data[ID_DEPTH]], [batch_data[ID_COLOR_GT], batch_data[ID_DEPTH_GT]]
             # return input_data, supplement
-        return [batch_data[ID_COLOR], batch_data[ID_DEPTH]]
+        return [batch_data[ID_COLOR], batch_data[ID_DEPTH]], []
 
     def show_train_result(self, epoch: int, loss:
                           list, acc: list,
@@ -62,8 +62,12 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
                     img_id: int, model_id: int) -> None:
         assert self.__train_dataset is not None
         args = self.__args
-        # save method       
-        pass
+        # save method  
+        if model_id ==0:
+            self.__saver.save_output(output_data[0].detach().cpu().numpy(),
+                                    img_id, args.dataset, supplement)
+
+        
 
     
 

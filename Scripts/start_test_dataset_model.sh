@@ -8,22 +8,22 @@ evalution_format='training'
 echo "test gpus id: "${test_gpus_id}
 echo "the list path is: "${test_list_path}
 echo "start to predict disparity map"
-CUDA_VISIBLE_DEVICES=${test_gpus_id} python -u Source/main.py \
+CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --mode test \
-                        --batchSize 4 \
-                        --gpu 4 \
-                        --trainListPath ${test_list_path} \
-                        --imgWidth 1536 \
+                        --batchSize 1 \
+                        --gpu 1 \
+                        --trainListPath ./Datasets/thuman_training_list.csv \
+                        --imgWidth 512 \
                         --imgHeight 512 \
-                        --dataloaderNum 16 \
+                        --dataloaderNum 0 \
                         --maxEpochs 45 \
                         --imgNum 200 \
                         --sampleNum 1 \
                         --lr 0.0001 \
                         --log ./TestLog/ \
                         --dist False \
-                        --modelName model_name \
+                        --modelName BodyReconstruction \
                         --outputDir ./DebugResult/ \
                         --modelDir ./Checkpoint/ \
-                        --dataset dataset_name
+                        --dataset thuman2.0
 echo "Finish!"

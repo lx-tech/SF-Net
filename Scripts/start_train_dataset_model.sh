@@ -20,7 +20,7 @@ CUDA_VISIBLE_DEVICES=0 python -u Source/main.py \
                         --trainListPath ./Datasets/thuman_training_list.csv \
                         --imgWidth 512 \
                         --imgHeight 256 \
-                        --dataloaderNum 24 \
+                        --dataloaderNum 0 \
                         --maxEpochs 200 \
                         --imgNum 59 \
                         --sampleNum 1 \
