@@ -12,12 +12,12 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --mode test \
                         --batchSize 1 \
                         --gpu 1 \
-                        --trainListPath ./Datasets/thuman_training_list.csv \
+                        --trainListPath ./Datasets/thuman_testing_val_list.csv \
                         --imgWidth 512 \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
                         --maxEpochs 45 \
-                        --imgNum 200 \
+                        --imgNum 12 \
                         --sampleNum 1 \
                         --lr 0.0001 \
                         --log ./TestLog/ \

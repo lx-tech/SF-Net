@@ -25,8 +25,8 @@ TRAIN_LIST_PATH = './Datasets/thuman_training_list.csv'
 VAL_TRAINLIST_PATH = './Datasets/thuman_testing_val_list.csv'
 
 # IMG_NUM = 194  # the dataset's total image
-IMG_NUM = 59    # the dataset's total image
-TIMES = 10000      # the sample of val
+IMG_NUM = 60    # the dataset's total image
+TIMES = 5      # the sample of val
 
 TEST_FLAG = True
 
@@ -65,7 +65,7 @@ def output_data(output_file: object, data: str) -> None:
 def gen_list(fd_train_list, fd_val_train_list):
     total = 0
     off_set = 1
-    for num in (list(range(1,30))+list(range(330,360))):
+    for num in (list(range(1,31))+list(range(330,360))):
 
         color_path = gen_color_path(RGB_FOLDER, num)
         color_lable_path = gen_color_path(RGB_LABLE_FOLDER, 0)

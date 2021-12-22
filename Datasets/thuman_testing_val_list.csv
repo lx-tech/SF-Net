@@ -1,0 +1,13 @@
+color_img,depth_img,color_gt,depth_gt
+G:/lx/Datasets/thuman2.0/training/color/0004_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0004_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0009_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0009_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0014_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0014_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0019_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0019_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0024_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0024_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0029_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0029_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0334_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0334_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0339_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0339_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0344_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0344_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0349_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0349_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0354_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0354_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png
+G:/lx/Datasets/thuman2.0/training/color/0359_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth/0359_0_00.png,G:/lx/Datasets/thuman2.0/training/color_gt/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/training/depth_gt/0000_0_00.png

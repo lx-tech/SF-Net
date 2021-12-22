@@ -22,7 +22,7 @@ CUDA_VISIBLE_DEVICES=0 python -u Source/main.py \
                         --imgHeight 256 \
                         --dataloaderNum 0 \
                         --maxEpochs 200 \
-                        --imgNum 59 \
+                        --imgNum 48 \
                         --sampleNum 1 \
                         --log ${tensorboard_folder} \
                         --lr 0.001 \
