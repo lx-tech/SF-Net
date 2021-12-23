@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
                         --maxEpochs 45 \
-                        --imgNum 12 \
+                        --imgNum 54 \
                         --sampleNum 1 \
                         --lr 0.0001 \
                         --log ./TestLog/ \
