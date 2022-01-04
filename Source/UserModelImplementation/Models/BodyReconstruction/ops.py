@@ -3,6 +3,8 @@ from torch import nn
 import numpy as np
 import cv2
 import time
+from PIL import Image
+import torchvision.transforms as transforms
 
 
 def convert_depth_to_0_1(tensor, low_thres, up_thres):
@@ -122,6 +124,69 @@ def depth2normal_ortho(depth, dx, dy):
     paddings = (0, 0, 1, 1, 1, 1, 0, 0)
     normal = torch.nn.functional.pad(normal, paddings, 'constant')  # (B,H,W,3)
     return normal  # (B,H,W,3)
+
+def depth2normal(depth):
+    global flag_XY, X, Y
+    # depth: [B,1,H,W]
+    B, C, H, W = depth.shape
+    depth = depth[:, 0, :, :]
+    depth_mask = (depth<1).float()
+    depth = depth * depth_mask
+
+    if flag_XY:
+        Y, X = torch.meshgrid(torch.tensor(range(H)), torch.tensor(range(W)))
+        X = X.unsqueeze(0).repeat(B, 1, 1).float().cuda()  # (B,H,W)
+        Y = Y.unsqueeze(0).repeat(B, 1, 1).float().cuda()
+        flag_XY = False
+
+    x_cord = -X 
+    y_cord = Y 
+    p = torch.stack([x_cord, y_cord, depth], dim=3)  # (B,H,W,3)
+
+    # vector of p_3d in west, south, east, north direction
+    p_ctr = p[:, 1:-1, 1:-1, :]
+    vw = p_ctr - p[:, 1:-1, 2:, :]
+    vs = p[:, 2:, 1:-1, :] - p_ctr
+    ve = p_ctr - p[:, 1:-1, :-2, :]
+    vn = p[:, :-2, 1:-1, :] - p_ctr
+    normal_1 = torch.cross(vs, vw)  # (B,H-2,W-2,3)
+    normal_2 = torch.cross(vn, ve)
+    normal_1 = normalize(normal_1)
+    normal_2 = normalize(normal_2)
+    normal = normal_1 + normal_2
+    normal = normalize(normal)
+    paddings = (0, 0, 1, 1, 1, 1, 0, 0)
+    normal = torch.nn.functional.pad(normal, paddings, 'constant')  # (B,H,W,3)
+    return normal  # (B,H,W,3)
+
+
+def depth_to_normal(depth):
+    #depth: [B,1,H,W]
+    depth = depth.squeeze(1)
+    depth = depth*1000.0
+    b, h, w = depth.shape
+    normal = torch.zeros(b,3,h-2,w-2)
+    #depth_mask = (depth<1.5).float()
+    #depth = depth * depth_mask   
+    for i in range(b):
+        depth_img = depth[i,:,:]
+        dx=(-(depth_img[2:h,1:w-1]-depth_img[0:h-2,1:w-1])*0.5)
+        dy=(-(depth_img[1:h-1,2:w]-depth_img[1:h-1,0:w-2])*0.5)
+        dz=torch.ones(( w-2,h-2)).cuda()
+        #dz=dz.to(device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        dl =torch.sqrt(torch.mul(dx, dx) + torch.mul(dy,dy) + torch.mul(dz,dz))
+        dx = torch.div(dx, dl) * 0.5 + 0.5
+        dy = torch.div(dy, dl) * 0.5 + 0.5
+        dz = torch.div(dz, dl) * 0.5 + 0.5
+        normal_img = torch.stack([dx, dy, dz], dim=0)
+        #normal_save = cv2.cvtColor(np.transpose(normal_img.cpu().numpy()*255, [1, 2, 0]), cv2.COLOR_BGR2RGB)         
+        #cv2.imwrite("normal_0005_0_pre_1.png",normal_save.astype(np.uint8))
+        normal[i,...] = normal_img
+    paddings = (1, 1, 1, 1, 0, 0, 0, 0)
+    normal = torch.nn.functional.pad(normal, paddings, 'constant')  # (B,H,W,3)
+    return normal
+
+
 
 
 def adjust_learning_rate(optimizer, decay_rate=.9):

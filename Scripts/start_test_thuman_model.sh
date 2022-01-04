@@ -12,18 +12,19 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --mode test \
                         --batchSize 1 \
                         --gpu 1 \
-                        --trainListPath ./Datasets/thuman_testing_val_list.csv \
+                        --trainListPath ./Datasets/thuman_testing_list.csv \
                         --imgWidth 512 \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
                         --maxEpochs 45 \
-                        --imgNum 54 \
+                        --imgNum 588 \
                         --sampleNum 1 \
                         --lr 0.0001 \
                         --log ./TestLog/ \
                         --dist False \
                         --modelName BodyReconstruction \
                         --outputDir ./DebugResult/ \
+                        --resultImgDir ./ResultImg/\
                         --modelDir ./Checkpoint/ \
                         --dataset thuman2.0
 echo "Finish!"

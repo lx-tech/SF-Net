@@ -7,6 +7,7 @@ from torch.utils.data.dataset import Dataset
 import pandas as pd
 import JackFramework as jf
 import cv2
+from PIL import Image
 
 
 
@@ -113,7 +114,8 @@ class BodyReconstructionDataset(Dataset):
     @staticmethod
     def _read_png_depth(path: str) -> torch.tensor:
         gt_depth = jf.ImgIO.read_img(path)
-        #gt_depth = np.squeeze(gt_depth, 2)
+        #gt_depth = Image.open(path)
+        #gt_depth = np.expand_dims(gt_depth, axis=2)
         gt_depth = np.ascontiguousarray(
             gt_depth, dtype=np.float32) / float(BodyReconstructionDataset._DEPTH_UNIT)
         return gt_depth

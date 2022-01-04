@@ -1,0 +1,5 @@
+color_img,depth_img,color_gt,depth_gt
+G:/lx/Datasets/thuman2.0/testing/color/0005/0000_0_00.jpg,G:/lx/Datasets/thuman2.0/testing/depth/0005/0000_0_00.png,,
+G:/lx/Datasets/thuman2.0/testing/color/0005/0009_0_00.jpg,G:/lx/Datasets/thuman2.0/testing/depth/0005/0009_0_00.png,,
+G:/lx/Datasets/thuman2.0/testing/color/0005/0019_0_00.jpg,G:/lx/Datasets/thuman2.0/testing/depth/0005/0019_0_00.png,,
+G:/lx/Datasets/thuman2.0/testing/color/0005/0029_0_00.jpg,G:/lx/Datasets/thuman2.0/testing/depth/0005/0029_0_00.png,,

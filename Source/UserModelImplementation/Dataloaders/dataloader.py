@@ -65,7 +65,10 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         # save method  
         if model_id ==0:
             self.__saver.save_output(output_data[0].detach().cpu().numpy(),
+                                    output_data[1].detach().cpu().numpy(),
+                                    output_data[2].detach().cpu().numpy(),
                                     img_id, args.dataset, supplement)
+                  
 
         
 

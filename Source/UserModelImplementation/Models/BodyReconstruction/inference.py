@@ -7,11 +7,12 @@ import torch.optim as optim
 import JackFramework as jf
 import sys
 # import UserModelImplementation.user_define as user_def
-#from .model import Model
+from .model import Model
 import torch.nn.functional as F
 import torch.nn as nn
 from .submodel import UNet 
 import numpy as np
+import ops
 
 class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
     """docstring for BodyReconstructionInterface"""
@@ -21,6 +22,7 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
     DEPTH_LABLE_ID = 1
     COLOR_ID = 0
     DEPTH_ID = 1
+
 
     def __init__(self, args: object) -> object:
         super().__init__(args)
@@ -44,7 +46,7 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
         self.__lr = args.lr
         # return model
         ngf = 32
-        model = UNet(in_channel=4, out_channel=3, ngf=ngf, upconv=False, norm=True)
+        model = Model(in_channel=4, ngf=ngf)
         return [model]
 
     def optimizer(self, model: list, lr: float) -> list:
@@ -68,19 +70,20 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
     def inference(self, model: list, input_data: list, model_id: int) -> list:
         # args = self.__args
         if self.MODEL_ID == model_id:
-            color_front = model(torch.cat((input_data[self.COLOR_ID], input_data[self.DEPTH_ID]), dim=1))
-        return [color_front]
+            color_front, depth_front = model(input_data[self.COLOR_ID], input_data[self.DEPTH_ID])
+            normal_pre = ops.depth_to_normal(depth_front)
+        return [color_front, depth_front, normal_pre]
 
 
     def accuary(self, output_data: list, label_data: list, model_id: int) -> list:
-        # return acc
+        # return acc 
         # args = self.__args
         acc_0 = None
         acc_1 = None
         if self.MODEL_ID == model_id:
             acc_0 = jf.BaseAccuracy.rmse_score(output_data[0], label_data[0])
-            #acc_1 = jf.BaseAccuracy.rmse_score(output_data[1], label_data[1])
-        return [acc_0]
+            acc_1 = jf.BaseAccuracy.rmse_score(output_data[1], label_data[1])
+        return [acc_0, acc_1]
 
     def loss(self, output_data: list, label_data: list, model_id: int) -> list:
         # return loss
@@ -91,15 +94,20 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
         color_pre = output_data[0]
         color_gt = label_data[0]
         mask = (label_data[0]>0)
+        #print(label_data[1].shape)
         #mask = np.expand_dims(color_gt.cpu(), axis=0)
         #print(mask.shape)
         if self.MODEL_ID == model_id:
             #loss_0 = self.__criterion(output_data[0], label_data[0].long())
             #loss_0 = F.smooth_l1_loss(output_data[mask], label_data[mask], size_average=True)
-            loss_0 = torch.mean(torch.abs(color_pre-color_gt))
-            #total_loss = loss_0 + loss_1
+            loss_color = torch.mean(torch.abs(output_data[self.COLOR_ID]-label_data[self.COLOR_LABEL_ID]))
+            loss_depth = torch.mean(torch.abs(output_data[self.DEPTH_ID]-label_data[self.DEPTH_LABLE_ID]))
+            normal_pre = ops.depth_to_normal(output_data[self.DEPTH_ID])
+            normal_gt = ops.depth_to_normal(label_data[self.DEPTH_LABLE_ID])
+            loss_normal = torch.mean(torch.abs(normal_pre-normal_gt))
+            total_loss = loss_color + loss_depth + loss_normal
 
-        return [loss_0]
+        return [total_loss, loss_color, loss_depth, loss_normal]
 
     # Optional
     def pretreatment(self, epoch: int, rank: object) -> None:
