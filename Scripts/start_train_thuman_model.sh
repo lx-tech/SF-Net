@@ -13,16 +13,16 @@ if [ -d "${tensorboard_folder}" ]; then
 fi
 
 echo "Begin to train the model!"
-CUDA_VISIBLE_DEVICES=2,3 python -u Source/main.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3 python -u Source/main.py \
                         --mode train \
-                        --batchSize 4 \
+                        --batchSize 16 \
                         --gpu 2 \
                         --trainListPath ./Datasets/thuman_training_list.csv \
                         --imgWidth 512 \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
                         --maxEpochs 200 \
-                        --imgNum 2646 \
+                        --imgNum 2842 \
                         --sampleNum 1 \
                         --log ${tensorboard_folder} \
                         --lr 0.001 \

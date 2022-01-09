@@ -8,8 +8,9 @@ from .data_saver import DataSaver
 # traing
 ID_COLOR = 0
 ID_DEPTH = 1
-ID_COLOR_GT =2
-ID_DEPTH_GT =3
+ID_UV = 2
+ID_COLOR_GT =3
+ID_DEPTH_GT =4
 #testing
 
 class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
@@ -40,9 +41,10 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         self.__start_time = time.time()
         if is_training:
             # return input_data_list, label_data_list
-             return [batch_data[ID_COLOR], batch_data[ID_DEPTH]], [batch_data[ID_COLOR_GT], batch_data[ID_DEPTH_GT]]
+             return [batch_data[ID_COLOR], batch_data[ID_DEPTH], batch_data[ID_UV]],\
+                  [batch_data[ID_COLOR_GT], batch_data[ID_DEPTH_GT]]
             # return input_data, supplement
-        return [batch_data[ID_COLOR], batch_data[ID_DEPTH]], []
+        return [batch_data[ID_COLOR], batch_data[ID_DEPTH], batch_data[ID_UV]], []
 
     def show_train_result(self, epoch: int, loss:
                           list, acc: list,

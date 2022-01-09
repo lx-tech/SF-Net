@@ -22,6 +22,7 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
     DEPTH_LABLE_ID = 1
     COLOR_ID = 0
     DEPTH_ID = 1
+    UV_ID = 2
 
 
     def __init__(self, args: object) -> object:
@@ -46,7 +47,7 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
         self.__lr = args.lr
         # return model
         ngf = 32
-        model = Model(in_channel=4, ngf=ngf)
+        model = Model(in_channel=7, ngf=ngf)
         return [model]
 
     def optimizer(self, model: list, lr: float) -> list:
@@ -70,7 +71,9 @@ class BodyReconstructionInterface(jf.UserTemplate.ModelHandlerTemplate):
     def inference(self, model: list, input_data: list, model_id: int) -> list:
         # args = self.__args
         if self.MODEL_ID == model_id:
-            color_front, depth_front = model(input_data[self.COLOR_ID], input_data[self.DEPTH_ID])
+            color_front, depth_front = model(input_data[self.COLOR_ID], 
+                                            input_data[self.DEPTH_ID], 
+                                            input_data[self.UV_ID])
             normal_pre = ops.depth_to_normal(depth_front)
         return [color_front, depth_front, normal_pre]
 

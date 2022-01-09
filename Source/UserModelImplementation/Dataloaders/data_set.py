@@ -8,6 +8,7 @@ import pandas as pd
 import JackFramework as jf
 import cv2
 from PIL import Image
+import scipy.misc
 
 
 
@@ -25,6 +26,7 @@ class BodyReconstructionDataset(Dataset):
 
         self.__color_img_path = input_dataframe["color_img"].values
         self.__depth_img_path = input_dataframe["depth_img"].values
+        self.__uv_img_path = input_dataframe["uv_img"].values
         self.__color_gt_path = input_dataframe["color_gt"].values
         self.__depth_gt_path = input_dataframe["depth_gt"].values
 
@@ -32,34 +34,37 @@ class BodyReconstructionDataset(Dataset):
             self.__get_path = self._get_training_path
             self.__data_steam = list(zip(self.__color_img_path,
                                          self.__depth_img_path,
+                                         self.__uv_img_path,
                                          self.__color_gt_path,
                                          self.__depth_gt_path))
         else:
             self.__get_path = self._get_testing_path
             self.__data_steam = list(zip(self.__color_img_path,
-                                         self.__depth_img_path))
+                                         self.__depth_img_path,
+                                         self.__uv_img_path))
 
     def __getitem__(self, idx: int):
-        color_img_path, depth_img_path, color_gt_path, depth_gt_path = self.__get_path(idx)
-        return self._get_data(color_img_path, depth_img_path, color_gt_path, depth_gt_path)
+        color_img_path, depth_img_path, uv_img_path, color_gt_path, depth_gt_path = self.__get_path(idx)
+        return self._get_data(color_img_path, depth_img_path, uv_img_path, color_gt_path, depth_gt_path)
 
     def _get_training_path(self, idx: int) -> list:
-        return self.__color_img_path[idx], self.__depth_img_path[idx],\
+        return self.__color_img_path[idx], self.__depth_img_path[idx], self.__uv_img_path[idx],\
             self.__color_gt_path[idx], self.__depth_gt_path[idx]
 
     def _get_testing_path(self, idx: int) -> list:
-        return self.__color_img_path[idx], self.__depth_img_path[idx],\
+        return self.__color_img_path[idx], self.__depth_img_path[idx], self.__uv_img_path[idx],\
             self.__color_gt_path[idx], self.__depth_gt_path[idx]
 
-    def _get_data(self, color_img_path, depth_img_path, color_gt_path, depth_gt_path):
+    def _get_data(self, color_img_path, depth_img_path, uv_img_path, color_gt_path, depth_gt_path):
         if self.__is_training:
-            return self._read_training_data(color_img_path, depth_img_path, 
+            return self._read_training_data(color_img_path, depth_img_path, uv_img_path, 
                                             color_gt_path, depth_gt_path)
-        return self._read_testing_data(color_img_path, depth_img_path, 
+        return self._read_testing_data(color_img_path, depth_img_path, uv_img_path, 
                                             color_gt_path, depth_gt_path)
 
     def _read_training_data(self, color_img_path: str,
                             depth_img_path: str,
+                            uv_img_path: str,
                             color_gt_path: str,
                             depth_gt_path: str) -> object:
         args = self.__args
@@ -69,11 +74,12 @@ class BodyReconstructionDataset(Dataset):
 
         color_img = jf.ImgIO.read_img(color_img_path)
         depth_img = self._read_png_depth(depth_img_path)
+        uv_img = np.array(scipy.misc.imread(uv_img_path), np.float32)
         color_gt = jf.ImgIO.read_img(color_gt_path)
         depth_gt = self._read_png_depth(depth_gt_path)
 
-        color_img, depth_img, color_gt, depth_gt = jf.DataAugmentation.random_crop(
-            [color_img, depth_img, color_gt, depth_gt],
+        color_img, depth_img, uv_img, color_gt, depth_gt = jf.DataAugmentation.random_crop(
+            [color_img, depth_img, uv_img, color_gt, depth_gt],
             color_img.shape[1], color_img.shape[0], width, hight)
 
         #color_img = jf.DataAugmentation.standardize(color_img)
@@ -81,32 +87,38 @@ class BodyReconstructionDataset(Dataset):
 
         color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
         color_gt = color_gt / float(BodyReconstructionDataset._DEPTH_DIVIDING)
+        uv_img = uv_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
 
         #color_img = jf.DataAugmentation.normalize(color_img)
         #color_gt = jf.DataAugmentation.normalize(color_gt)
 
         color_img = color_img.transpose(2, 0, 1)
         depth_img = depth_img.transpose(2, 0, 1)
+        uv_img = uv_img.transpose(2, 0, 1)
         color_gt = color_gt.transpose(2, 0, 1)
         depth_gt = depth_gt.transpose(2, 0, 1)
-        return color_img, depth_img, color_gt, depth_gt
+        return color_img, depth_img, uv_img, color_gt, depth_gt
 
     def _read_testing_data(self, color_img_path: str,
                            depth_img_path: str,
+                           uv_img_path: str,
                            color_gt_path: str,
                            depth_gt_path: str) -> object:
         args = self.__args
 
         color_img = jf.ImgIO.read_img(color_img_path)
         depth_img = self._read_png_depth(depth_img_path)
+        uv_img = np.array(scipy.misc.imread(uv_img_path), np.float32)
 
         #color_img = jf.DataAugmentation.standardize(color_img)
         color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
+        uv_img = uv_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
 
         color_img = color_img.transpose(2, 0, 1)
         depth_img = depth_img.transpose(2, 0, 1)
+        uv_img = uv_img.transpose(2, 0, 1)
 
-        return color_img, depth_img
+        return color_img, depth_img, uv_img
     
     def __len__(self):
         return len(self.__data_steam)
@@ -152,11 +164,13 @@ def debug_main():
         print(batch_data[1].size())
         print(batch_data[2].size())
         print(batch_data[3].size())
+        print(batch_data[4].size())
         print('___________')
-        print(batch_data[0][:,:,120,220])
-        print(batch_data[2][:,:,120,220])
-        print(batch_data[1][:,:,120,220])
-        print(batch_data[3][:,:,120,220])
+        print(batch_data[0][:,:,100,220])
+        print(batch_data[1][:,:,100,220])
+        print(batch_data[2][:,:,100,220])
+        print(batch_data[3][:,:,100,220])
+        print(batch_data[4][:,:,100,220])
     
 
 

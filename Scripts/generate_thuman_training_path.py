@@ -10,9 +10,11 @@ ROOT_PATH = 'G:/lx/Datasets/thuman2.0/'  # root path
 RAW_DATA_FOLDER = 'training/'
 RGB_FOLDER = 'color/%s/'
 DEPTH_FOLDER = 'depth/%s/'
+UV_FOLDER = 'uv/%s/'
 RGB_LABLE_FOLDER = 'color_gt/%s/'
 DEPTH_LABLE_FOLDER = 'depth_gt/%s/'
 FILE_NAME = '%04d_0_00'
+UV_FILE_NAME = '%04d_0_00_dp.0001'
 
 # file type
 RAW_COLOR_TYPE = '.jpg'
@@ -26,7 +28,7 @@ VAL_TRAINLIST_PATH = './Datasets/thuman_testing_val_list.csv'
 
 # IMG_NUM = 194  # the dataset's total image
 IMG_NUM = 60    # the dataset's total image
-TIMES = 10      # the sample of val
+TIMES = 30      # the sample of val
 
 TEST_FLAG = True
 
@@ -51,6 +53,11 @@ def gen_depth_gt_path(file_folder: str, num: int) -> str:
         RAW_DEPTH_TYPE
     return path
 
+def gen_uv_path(file_folder: str, num: int) -> str:
+    path = ROOT_PATH + RAW_DATA_FOLDER + UV_FOLDER % file_folder + UV_FILE_NAME % num + \
+        RAW_DEPTH_TYPE
+    return path
+
 def open_file() -> object:
     if os.path.exists(TRAIN_LIST_PATH):
         os.remove(TRAIN_LIST_PATH)
@@ -60,7 +67,7 @@ def open_file() -> object:
     fd_train_list = open(TRAIN_LIST_PATH, 'a')
     fd_val_train_list = open(VAL_TRAINLIST_PATH, 'a')
 
-    data_str = "color_img,depth_img,color_gt,depth_gt"
+    data_str = "color_img,depth_img,uv_img,color_gt,depth_gt"
     output_data(fd_train_list, data_str)
     output_data(fd_val_train_list, data_str)
 
@@ -83,21 +90,24 @@ def produce_list(folder_list, fd_train_list, fd_val_train_list):
             color_lable_path = gen_color_gt_path(folder_list[i], 0)
             depth_path = gen_depth_path(folder_list[i], num)
             depth_lable_path = gen_depth_gt_path(folder_list[i], 0)
+            uv_path = gen_uv_path(folder_list[i], num)
 
             color_path_is_exists = os.path.exists(color_path)
             color_lable_path_is_exists = os.path.exists(color_lable_path)
             depth_path_is_exists = os.path.exists(depth_path)
             depth_lable_path_is_exists = os.path.exists(depth_lable_path)
+            uv_path_is_exists = os.path.exists(uv_path)
 
             if (not color_path_is_exists) and (not color_lable_path_is_exists)\
-                    (not depth_path_is_exists) and (not depth_lable_path_is_exists):
+                    (not depth_path_is_exists) and (not depth_lable_path_is_exists)\
+                    and (not uv_path_is_exists):
                 break
 
             if (off_set + num) % TIMES == 0:
-                data_str = color_path + ',' + depth_path + ',' + color_lable_path + ',' + depth_lable_path
+                data_str = color_path + ',' + depth_path + ',' + uv_path + ',' + color_lable_path + ',' + depth_lable_path 
                 output_data(fd_val_train_list, data_str)
             else:
-                data_str = color_path + ',' + depth_path + ',' + color_lable_path + ',' + depth_lable_path
+                data_str = color_path + ',' + depth_path + ',' + uv_path + ',' + color_lable_path + ',' + depth_lable_path 
                 output_data(fd_train_list, data_str)
 
             total = total + 1
