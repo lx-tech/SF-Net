@@ -31,6 +31,7 @@ class DataSaver(object):
             self._save_output_color(temp_color, name)
             self._save_output_depth(temp_depth, name)
             self._save_output_normal(temp_normal, name)
+            self._save_output_mesh(temp_depth, temp_color, name)
 
     def _save_output_depth(self, img: np.array, num: int) -> None:
         args = self.__args      
@@ -53,8 +54,34 @@ class DataSaver(object):
         img = (img  * float(DataSaver._DEPTH_DIVIDING)).astype(np.uint8)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite(path, img)
+
+    def _save_output_mesh(self, depth: np.array, color: np.array, num: int) -> None:
+        args = self.__args
+        path = self._generate_output_img_path(args.resultImgDir, num, "%04d_mesh_front") 
+        depth = np.squeeze(depth)
+        depth = (depth * float(DataSaver._DEPTH_UNIT))
+        self._remove_points(depth)
+        color = color.transpose(1, 2, 0)
+        color = (color  * float(DataSaver._DEPTH_DIVIDING)).astype(np.uint8)
+
+        low_thres = 100 
+        mask = depth > low_thres
+        mask = mask.astype(np.float32)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
+        eroded = cv2.erode(mask, kernel)
+        edge = (mask - eroded).astype(np.bool)
+        depth[edge] = depth[edge] * 2 
+        self._depth2mesh(depth, mask, color, path)
+
+
+    def _remove_points(self, fp):
+        f0 = (fp>1000)
+        f1 = fp<10
+        fp[f0] = 0.0
+        fp[f1] = 0.0
+
     
-    def _write_matrix_txt(a,filename):
+    def _write_matrix_txt(self,a,filename):
         mat = np.matrix(a)
         with open(filename,'wb') as f:
             for line in mat:
@@ -69,31 +96,24 @@ class DataSaver(object):
         cv2.imwrite(path, normal.astype(np.uint8))
 
     # Function borrowed from https://github.com/sfu-gruvi-3dv/deep_human
-    def _depth2mesh(self, depth_img: np.array, num: int):
-        args = self.__args
-        h = depth_img.shape[0]
-        w = depth_img.shape[1]
-        filename = self._generate_output_img_path(args.resultImgDir, num, "%04d_mesh_front")  
+    def _depth2mesh(self, depth, mask, color, filename):
+        h = depth.shape[0]
+        w = depth.shape[1]
         #depth = depth.reshape(h,w,1)
+        depth = depth/1000
         f = open(filename + ".obj", "w")
         for i in range(h):
             for j in range(w):
-                f.write('v '+str(float(2.0*i/h))+' '+str(float(2.0*j/w))+' '+str(float(depth_img[i,j,0]))+'\n')
+                f.write('v '+str(float(2.0*i/h))+' '+str(float(2.0*j/w))+' '+str(float(depth[i,j]))\
+                    +' '+str(float(color[i,j,0]))+' '+str(float(color[i,j,1]))+' '+str(float(color[i,j,2]))+'\n')
 
-        mask = depth_img < 1.0
-        depth_img = depth_img * -1.0
-        print(mask)
-        print(depth_img)
-        # m 2 cm
-        #depth_img = depth_img * mask * 1000
-        #threshold = 0.07
         threshold = 0.07
 
         for i in range(h-1):
             for j in range(w-1):
                 if i < 2 or j < 2:
                     continue
-                localpatch= np.copy(depth_img[i-1:i+2,j-1:j+2])
+                localpatch= np.copy(depth[i-1:i+2,j-1:j+2])
                 dy_u = localpatch[0,:] - localpatch[1,:]
                 dx_l = localpatch[:,0] - localpatch[:,1]
                 dy_d = localpatch[0,:] - localpatch[-1,:]
@@ -106,7 +126,7 @@ class DataSaver(object):
                     f.write('f '+str(int(j+i*w+1))+' '+str(int(j+i*w+1+1))+' '+str(int((i + 1)*w+j+1))+'\n')
                     f.write('f '+str(int((i+1)*w+j+1+1))+' '+str(int((i+1)*w+j+1))+' '+str(int(i * w + j + 1 + 1)) + '\n')
         f.close()
-        return
+
 
     @staticmethod
     def _generate_output_img_path(dir_path: str, num: str,

@@ -156,8 +156,8 @@ def depth2normal(depth):
     normal = normal_1 + normal_2
     normal = normalize(normal)
     paddings = (0, 0, 1, 1, 1, 1, 0, 0)
-    normal = torch.nn.functional.pad(normal, paddings, 'constant')  # (B,H,W,3)
-    return normal  # (B,H,W,3)
+    normal = torch.nn.functional.pad(normal, paddings, 'constant')  # (B,3,H,W)
+    return normal  # (B,3,H,W)
 
 
 def depth_to_normal(depth):

@@ -3,7 +3,7 @@ import os
 
 
 # define sone struct
-ROOT_PATH = 'G:/lx/Datasets/thuman2.0/'  # root path
+ROOT_PATH = 'G:/lx/Datasets/thuman2.0_v2/'  # root path
 
 # the file's path and format
 # RAW_DATA_FOLDER = 'Kitti2012/training/%s/'
@@ -19,7 +19,7 @@ RAW_COLOR_TYPE = '.jpg'
 RAW_DEPTH_TYPE = '.png'
 
 # the output's path,
-TEST_LIST_PATH = './Datasets/thuman_testing_list.csv'
+TEST_LIST_PATH = './Datasets/thuman_testing_list_4.csv'
 
 IMG_NUM = 60    # the dataset's total image
 
@@ -83,7 +83,7 @@ def produce_list(folder_list, fd_test_list):
     return total
 
 def gen_list(fd_test_list):
-    folder_list = ['0005']
+    folder_list = ['0356','0357','0376','0377','0378']
     total = produce_list(folder_list, fd_test_list)
     return total
 

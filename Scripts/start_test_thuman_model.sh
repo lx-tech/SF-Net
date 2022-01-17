@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --mode test \
                         --batchSize 1 \
                         --gpu 1 \
-                        --trainListPath ./Datasets/thuman_testing_val_list.csv \
+                        --trainListPath ./Datasets/thuman_testing_list_3.csv \
                         --imgWidth 512 \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
@@ -24,7 +24,7 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --dist False \
                         --modelName BodyReconstruction \
                         --outputDir ./DebugResult/ \
-                        --resultImgDir ./ResultImg_densepose_val_v3/\
-                        --modelDir ./Checkpoint/ \
+                        --resultImgDir ./ResultImg_3_15/\
+                        --modelDir ./Checkpoint_3_15/ \
                         --dataset thuman2.0
 echo "Finish!"

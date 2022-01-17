@@ -1,11 +1,11 @@
 ResultImg/
 *previous*/
 Submission/
-Checkpoint/
+*Checkpoint*/
 *log/
 *Log/
 Example/
-*Result/
+*Result*/
 /*__pycache__*/
 sftp-config*.json
 *.pyc
