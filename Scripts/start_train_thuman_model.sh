@@ -13,22 +13,22 @@ if [ -d "${tensorboard_folder}" ]; then
 fi
 
 echo "Begin to train the model!"
-CUDA_VISIBLE_DEVICES=0,1,2,3 python -u Source/main.py \
+CUDA_VISIBLE_DEVICES=0,1 python -u Source/main.py \
                         --mode train \
-                        --batchSize 16 \
-                        --gpu 4 \
+                        --batchSize 8 \
+                        --gpu 2 \
                         --trainListPath ./Datasets/thuman_training_list_3_15.csv \
                         --imgWidth 512 \
                         --imgHeight 512 \
                         --dataloaderNum 0 \
-                        --maxEpochs 200 \
-                        --imgNum 2670 \
+                        --maxEpochs 150 \
+                        --imgNum 1950 \
                         --sampleNum 1 \
                         --log ${tensorboard_folder} \
                         --lr 0.001 \
                         --dist false \
                         --modelName BodyReconstruction \
-                        --modelDir ./Checkpoint_3_15/ \
+                        --modelDir ./Checkpoint_4_15_4/ \
                         --port ${dist_port} \
                         --dataset thuman2.0 > TrainRun.log 2>&1 &
 echo "You can use the command (>> tail -f TrainRun.log) to watch the training process!"

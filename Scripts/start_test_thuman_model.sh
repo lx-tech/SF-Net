@@ -19,12 +19,12 @@ CUDA_VISIBLE_DEVICES=3 python -u Source/main.py \
                         --maxEpochs 45 \
                         --imgNum 60 \
                         --sampleNum 1 \
-                        --lr 0.0001 \
+                        --lr 0.001 \
                         --log ./TestLog/ \
                         --dist False \
                         --modelName BodyReconstruction \
                         --outputDir ./DebugResult/ \
-                        --resultImgDir ./ResultImg_3_15/\
-                        --modelDir ./Checkpoint_3_15/ \
+                        --resultImgDir ./ResultImg_4_15_5/\
+                        --modelDir ./Checkpoint_4_15_4/ \
                         --dataset thuman2.0
 echo "Finish!"

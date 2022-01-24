@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dataclasses import dataclass
 import time
 import JackFramework as jf
 # import UserModelImplementation.user_define as user_def
@@ -24,6 +25,8 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         self.__val_dataset = None
         self.__saver = DataSaver(args)
         self.__start_time = 0
+        self.model0_res = None
+        
         
 
     def get_train_dataset(self, path: str, is_training: bool = True) -> object:
@@ -41,7 +44,7 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         self.__start_time = time.time()
         if is_training:
             # return input_data_list, label_data_list
-             return [batch_data[ID_COLOR], batch_data[ID_DEPTH], batch_data[ID_UV]],\
+             return [batch_data[ID_COLOR], batch_data[ID_DEPTH], batch_data[ID_UV], batch_data[ID_COLOR_GT], batch_data[ID_DEPTH_GT]], \
                   [batch_data[ID_COLOR_GT], batch_data[ID_DEPTH_GT]]
             # return input_data, supplement
         return [batch_data[ID_COLOR], batch_data[ID_DEPTH], batch_data[ID_UV]], []
@@ -50,7 +53,8 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
                           list, acc: list,
                           duration: float) -> None:
         assert len(loss) == len(acc)  # same model number
-        info_str = self.__result_str.training_result_str(epoch, loss[0], acc[0], duration, True)
+        #info_str = self.__result_str.training_result_str(epoch, loss[0], acc[0], duration, True)
+        info_str = self.__result_str.training_list_intermediate_result(epoch, loss, acc)
         jf.log.info(info_str)
 
     def show_val_result(self, epoch: int, loss:
@@ -65,18 +69,26 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         assert self.__train_dataset is not None
         args = self.__args
         # save method  
-        if model_id ==0:
-            self.__saver.save_output(output_data[0].detach().cpu().numpy(),
-                                    output_data[1].detach().cpu().numpy(),
+        if model_id == 0:
+            self.model0_res = output_data[0].detach().cpu().numpy()
+            self.__saver.save_output_color(output_data[0].detach().cpu().numpy(),
+                                    img_id, args.dataset, supplement)
+        #if model_id == 1:
+            #assert self.model0_res.all() !=None
+            self.__saver.save_output_depth(output_data[1].detach().cpu().numpy(),
                                     output_data[2].detach().cpu().numpy(),
                                     img_id, args.dataset, supplement)
-                  
+            #self.__saver.save_output_mesh(self.model0_res,
+            #                        output_data[0].detach().cpu().numpy(),
+            #                        img_id, args.dataset, supplement)
+            self.model0_res = None
 
+            
         
-
     
 
     def show_intermediate_result(self, epoch: int,
                                  loss: list, acc: list) -> str:
         assert len(loss) == len(acc)  # same model number
-        return self.__result_str.training_intermediate_result(epoch, loss[0], acc[0])
+        data_str = self.__result_str.training_list_intermediate_result(epoch, loss, acc)
+        return data_str

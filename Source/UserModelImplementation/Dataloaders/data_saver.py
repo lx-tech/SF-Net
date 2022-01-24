@@ -14,8 +14,7 @@ class DataSaver(object):
         super().__init__()
         self.__args = args
 
-    def save_output(self, color_pre: np.array, depth_pre: np.array, 
-                    normal_pre: np.array,
+    def save_output_color(self, color_pre: np.array, 
                     img_id: int, dataset_name: str,
                     supplement: list) -> None:
         #print(color_pre.shape)
@@ -23,14 +22,42 @@ class DataSaver(object):
         #names = supplement[0]
         for i in range(batch_size):
             temp_color = color_pre[i,:,:,:]
+            #print(temp_depth.shape)
+            name = batch_size * img_id + i
+
+            self._save_output_color(temp_color, name)
+
+    
+    def save_output_depth(self, depth_pre: np.array, 
+                    normal_pre: np.array,
+                    img_id: int, dataset_name: str,
+                    supplement: list) -> None:
+        #print(color_pre.shape)
+        batch_size, _, _, _, = normal_pre.shape
+        #names = supplement[0]
+        for i in range(batch_size):
             temp_depth = depth_pre[i,:,:,:]
             temp_normal = normal_pre[i,:,:,:]
             #print(temp_depth.shape)
             name = batch_size * img_id + i
 
-            self._save_output_color(temp_color, name)
             self._save_output_depth(temp_depth, name)
             self._save_output_normal(temp_normal, name)
+            #self._save_output_mesh(temp_depth, temp_color, name)
+
+    def save_output_mesh(self, color_pre: np.array, 
+                    depth_pre: np.array,
+                    img_id: int, dataset_name: str,
+                    supplement: list) -> None:
+        #print(color_pre.shape)
+        batch_size, _, _, _, = color_pre.shape
+        #names = supplement[0]
+        for i in range(batch_size):
+            temp_color = color_pre[i,:,:,:]
+            temp_depth = depth_pre[i,:,:,:]          
+            #print(temp_depth.shape)
+            name = batch_size * img_id + i
+
             self._save_output_mesh(temp_depth, temp_color, name)
 
     def _save_output_depth(self, img: np.array, num: int) -> None:
