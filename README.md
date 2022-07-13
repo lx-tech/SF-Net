@@ -35,6 +35,10 @@ $ ./install.sh
 ```
 $ python ./Scripts/generate_thuman_training_path.py
 ```
+or
+```
+$ python ./Scripts/generate_thuman_testing_path.py
+```
 
 2. Train the program, like:
 ```
@@ -57,7 +61,7 @@ BodyReconstruction
 │   └── ...
 ├── Scripts # Get it by ./generate_path.sh, you need build folder
 │   ├── clean.sh         # clean the project
-│   ├── generate_path.sh # generate the tranining or testing list like kitti2015_val_list
+│   ├── generate_path.sh # generate the tranining or testing list like thuman_training_list.csv
 │   ├── start_train_dataset_model.sh # start training command
 │   ├── start_test_dataset_model.sh # start training command
 │   └── ...
