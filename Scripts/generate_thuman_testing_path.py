@@ -3,10 +3,9 @@ import os
 
 
 # define sone struct
-ROOT_PATH = 'G:/lx/Datasets/thuman2.0_v2/'  # root path
+ROOT_PATH = '/home/lixing/Documents/Thuman/thuman2.0_v2/'  # root path
 
 # the file's path and format
-# RAW_DATA_FOLDER = 'Kitti2012/training/%s/'
 RAW_DATA_FOLDER = 'testing/'
 RGB_FOLDER = 'color/%s/'
 DEPTH_FOLDER = 'depth/%s/'
@@ -20,9 +19,6 @@ RAW_DEPTH_TYPE = '.png'
 
 # the output's path,
 TEST_LIST_PATH = './Datasets/thuman_testing_list_4.csv'
-
-IMG_NUM = 60    # the dataset's total image
-
 
 
 def gen_color_path(file_folder: str, num: int) -> str:

@@ -1,20 +1,24 @@
->This is a project for human 3d reconstruction.
+# SFNet: Clothed Human 3D Reconstruction via single Side-to-Front view RGB-D image.
 
+This repository contains a pytorch implementation of "[SFNet: Clothed Human 3D Reconstruction via single Side-to-Front view RGB-D image. (ICVR 2022)]".<br/>
+Authors: Xing Li, Yangyu Fan, Di Xu, Wenqing He, Guoyun Lv, Shiya Liu.
+
+![](asset/pipeline.png)
 ---
 ### Software Environment
 1. OS Environment
 ```
-cudaToolKit == 10.1
-cudnn == 7.3.6
+cudaToolKit == 11.3
+cuda == 11.0
 ```
 
 2. Python Environment (We provide the whole env in )
 ```
-python >= 3.8.5
-pythorch >= 1.15.0
-numpy >= 1.14.5
-opencv >= 3.4.0
-PIL >= 5.1.0
+python = 3.8
+pythorch = 1.15
+numpy = 1.14
+opencv = 3.4
+PIL = 5.1
 ```
 ---
 ### Hardware Environment
@@ -27,7 +31,7 @@ $ cd JackFramework/
 $ ./install.sh
 ```
 
-1. Get the Training list or Testing list （You need rewrite the code by your path, and my related demo code can be found in Source/Tools/genrate_**_traning_path.py）
+1. Get the Training list or Testing list （You need rewrite the code by your path, and my related demo code can be found in Source/Tools/genrate_thuman_****_path.py）
 ```
 $ python ./Scripts/generate_thuman_training_path.py
 ```
@@ -69,9 +73,6 @@ BodyReconstruction
 ├── LICENSE
 └── README.md
 ```
----
-### Update log
-#### 2022-01-01
-1. Add the normal map for loss functions and output;
+
 
  

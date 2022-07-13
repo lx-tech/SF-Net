@@ -20,12 +20,12 @@ class UserInterface(jf.UserTemplate.NetWorkInferenceTemplate):
         return model, dataloader
 
     def user_parser(self, parser: object) -> object:
-        # parser.add_argument('--startDisp', type=int, default=user_def.START_DISP,
-        #                    help='start disparity')
-        # return parser
         parser.add_argument('--lr_scheduler', type=UserInterface.__str2bool,
                             default=user_def.LR_SCHEDULER,
                             help='use or not use lr scheduler')
+        parser.add_argument('--save_mesh', type=UserInterface.__str2bool,
+                            default=user_def.SAVE_MESH,
+                            help='save or not save mesh')
         return parser
 
     @staticmethod

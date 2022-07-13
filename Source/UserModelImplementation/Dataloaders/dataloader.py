@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
+from pickle import TRUE
 import time
 import JackFramework as jf
 # import UserModelImplementation.user_define as user_def
@@ -25,7 +26,7 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         self.__val_dataset = None
         self.__saver = DataSaver(args)
         self.__start_time = 0
-        self.model0_res = None
+        #self.model0_res = None
         
         
 
@@ -53,7 +54,6 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
                           list, acc: list,
                           duration: float) -> None:
         assert len(loss) == len(acc)  # same model number
-        #info_str = self.__result_str.training_result_str(epoch, loss[0], acc[0], duration, True)
         info_str = self.__result_str.training_list_intermediate_result(epoch, loss, acc)
         jf.log.info(info_str)
 
@@ -70,18 +70,16 @@ class BodyDataloader(jf.UserTemplate.DataHandlerTemplate):
         args = self.__args
         # save method  
         if model_id == 0:
-            self.model0_res = output_data[0].detach().cpu().numpy()
             self.__saver.save_output_color(output_data[0].detach().cpu().numpy(),
                                     img_id, args.dataset, supplement)
-        #if model_id == 1:
-            #assert self.model0_res.all() !=None
+
             self.__saver.save_output_depth(output_data[1].detach().cpu().numpy(),
                                     output_data[2].detach().cpu().numpy(),
                                     img_id, args.dataset, supplement)
-            #self.__saver.save_output_mesh(self.model0_res,
-            #                        output_data[0].detach().cpu().numpy(),
-            #                        img_id, args.dataset, supplement)
-            self.model0_res = None
+            if args.save_mesh == True:
+                self.__saver.save_output_mesh(output_data[0].detach().cpu().numpy(),
+                                    output_data[1].detach().cpu().numpy(),
+                                   img_id, args.dataset, supplement)
 
             
         

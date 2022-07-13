@@ -6,9 +6,7 @@ from torch.utils.data.dataset import Dataset
 
 import pandas as pd
 import JackFramework as jf
-import cv2
 from PIL import Image
-import scipy.misc
 
 
 
@@ -74,7 +72,7 @@ class BodyReconstructionDataset(Dataset):
 
         color_img = jf.ImgIO.read_img(color_img_path)
         depth_img = self._read_png_depth(depth_img_path)
-        uv_img = np.array(scipy.misc.imread(uv_img_path), np.float32)
+        uv_img = jf.ImgIO.read_img(uv_img_path)
         color_gt = jf.ImgIO.read_img(color_gt_path)
         depth_gt = self._read_png_depth(depth_gt_path)
 
@@ -82,15 +80,9 @@ class BodyReconstructionDataset(Dataset):
             [color_img, depth_img, uv_img, color_gt, depth_gt],
             color_img.shape[1], color_img.shape[0], width, hight)
 
-        #color_img = jf.DataAugmentation.standardize(color_img)
-        #color_gt = jf.DataAugmentation.standardize(color_gt)
-
         color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
         color_gt = color_gt / float(BodyReconstructionDataset._DEPTH_DIVIDING)
         uv_img = uv_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
-
-        #color_img = jf.DataAugmentation.normalize(color_img)
-        #color_gt = jf.DataAugmentation.normalize(color_gt)
 
         color_img = color_img.transpose(2, 0, 1)
         depth_img = depth_img.transpose(2, 0, 1)
@@ -108,9 +100,7 @@ class BodyReconstructionDataset(Dataset):
 
         color_img = jf.ImgIO.read_img(color_img_path)
         depth_img = self._read_png_depth(depth_img_path)
-        uv_img = np.array(scipy.misc.imread(uv_img_path), np.float32)
-
-        #color_img = jf.DataAugmentation.standardize(color_img)
+        uv_img = jf.ImgIO.read_img(uv_img_path)
         color_img = color_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
         uv_img = uv_img / float(BodyReconstructionDataset._DEPTH_DIVIDING)
 
@@ -126,8 +116,6 @@ class BodyReconstructionDataset(Dataset):
     @staticmethod
     def _read_png_depth(path: str) -> torch.tensor:
         gt_depth = jf.ImgIO.read_img(path)
-        #gt_depth = Image.open(path)
-        #gt_depth = np.expand_dims(gt_depth, axis=2)
         gt_depth = np.ascontiguousarray(
             gt_depth, dtype=np.float32) / float(BodyReconstructionDataset._DEPTH_UNIT)
         return gt_depth

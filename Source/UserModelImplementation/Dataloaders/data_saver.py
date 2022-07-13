@@ -2,7 +2,6 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-#import JackFramework as jf
 
 
 class DataSaver(object):
@@ -17,12 +16,9 @@ class DataSaver(object):
     def save_output_color(self, color_pre: np.array, 
                     img_id: int, dataset_name: str,
                     supplement: list) -> None:
-        #print(color_pre.shape)
         batch_size, _, _, _, = color_pre.shape
-        #names = supplement[0]
         for i in range(batch_size):
             temp_color = color_pre[i,:,:,:]
-            #print(temp_depth.shape)
             name = batch_size * img_id + i
 
             self._save_output_color(temp_color, name)
@@ -32,30 +28,23 @@ class DataSaver(object):
                     normal_pre: np.array,
                     img_id: int, dataset_name: str,
                     supplement: list) -> None:
-        #print(color_pre.shape)
         batch_size, _, _, _, = normal_pre.shape
-        #names = supplement[0]
         for i in range(batch_size):
             temp_depth = depth_pre[i,:,:,:]
             temp_normal = normal_pre[i,:,:,:]
-            #print(temp_depth.shape)
             name = batch_size * img_id + i
 
             self._save_output_depth(temp_depth, name)
             self._save_output_normal(temp_normal, name)
-            #self._save_output_mesh(temp_depth, temp_color, name)
 
     def save_output_mesh(self, color_pre: np.array, 
                     depth_pre: np.array,
                     img_id: int, dataset_name: str,
                     supplement: list) -> None:
-        #print(color_pre.shape)
         batch_size, _, _, _, = color_pre.shape
-        #names = supplement[0]
         for i in range(batch_size):
             temp_color = color_pre[i,:,:,:]
             temp_depth = depth_pre[i,:,:,:]          
-            #print(temp_depth.shape)
             name = batch_size * img_id + i
 
             self._save_output_mesh(temp_depth, temp_color, name)
@@ -66,18 +55,13 @@ class DataSaver(object):
         img =  img.transpose(1, 2, 0)
         img = (img * float(DataSaver._DEPTH_UNIT)).astype(np.uint16)
         img = np.where(img<DataSaver._DEPTH_UNIT,img,0)
-        #print("depth_img")
-        #print(img.shape)
         cv2.imwrite(path, img)
 
 
     def _save_output_color(self, img: np.array, num: int) -> None:
         args = self.__args
         path = self._generate_output_img_path(args.resultImgDir, num, "%04d_color_front") 
-        #img = np.squeeze(img)
         img = img.transpose(1, 2, 0)
-        #img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_RGB2BGR)
-        #cv2.imwrite(path, img)
         img = (img  * float(DataSaver._DEPTH_DIVIDING)).astype(np.uint8)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite(path, img)
@@ -90,6 +74,8 @@ class DataSaver(object):
         self._remove_points(depth)
         color = color.transpose(1, 2, 0)
         color = (color  * float(DataSaver._DEPTH_DIVIDING)).astype(np.uint8)
+        depth = cv2.flip(depth,1)
+        color = cv2.flip(color,1)
 
         low_thres = 100 
         mask = depth > low_thres
@@ -118,7 +104,6 @@ class DataSaver(object):
         args = self.__args
         path = self._generate_output_img_path(args.resultImgDir, num, "%04d_normal_front") 
         normal=np.array(img*255)
-        #np.savetxt("normal.txt",normal[0,:,:], fmt='%.8f')
         normal = cv2.cvtColor(np.transpose(normal, [1, 2, 0]), cv2.COLOR_BGR2RGB)         
         cv2.imwrite(path, normal.astype(np.uint8))
 
@@ -126,7 +111,6 @@ class DataSaver(object):
     def _depth2mesh(self, depth, mask, color, filename):
         h = depth.shape[0]
         w = depth.shape[1]
-        #depth = depth.reshape(h,w,1)
         depth = depth/1000
         f = open(filename + ".obj", "w")
         for i in range(h):

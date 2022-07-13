@@ -3,10 +3,9 @@ import os
 
 
 # define sone struct
-ROOT_PATH = 'G:/lx/Datasets/thuman2.0_v2/'  # root path
+ROOT_PATH = '/home/lixing/Documents/Thuman/thuman2.0_v2/'  # root path
 
 # the file's path and format
-# RAW_DATA_FOLDER = 'Kitti2012/training/%s/'
 RAW_DATA_FOLDER = 'training/'
 RGB_FOLDER = 'color/%s/'
 DEPTH_FOLDER = 'depth/%s/'
@@ -21,16 +20,10 @@ RAW_COLOR_TYPE = '.jpg'
 RAW_DEPTH_TYPE = '.png'
 
 # the output's path,
-# TRAIN_LIST_PATH = './Datasets/kitti2012_training_list.csv'
-# VAL_TRAINLIST_PATH = './Datasets/kitti2012_val_list.csv'
-TRAIN_LIST_PATH = './Datasets/thuman_training_list_4_15.csv'
-VAL_TRAINLIST_PATH = './Datasets/thuman_testing_val_list_4_15.csv'
+TRAIN_LIST_PATH = './Datasets/thuman_training_list_4_30.csv'
+VAL_TRAINLIST_PATH = './Datasets/thuman_testing_val_list_4_30.csv'
 
-# IMG_NUM = 194  # the dataset's total image
-IMG_NUM = 60    # the dataset's total image
 TIMES = 100      # the sample of val
-
-TEST_FLAG = True
 
 
 def gen_color_path(file_folder: str, num: int) -> str:
@@ -84,8 +77,8 @@ def produce_list(folder_list, fd_train_list, fd_val_train_list):
     off_set = 1
     for i in range(len(folder_list)):
 
-        #for num in (list(range(1,31))+list(range(330,360))):
-        for num in (list(range(1,16))+list(range(345,360))):
+        for num in (list(range(1,31))+list(range(330,360))):
+        #for num in (list(range(1,16))+list(range(345,360))):
             color_path = gen_color_path(folder_list[i], num)
             color_lable_path = gen_color_gt_path(folder_list[i], 0)
             depth_path = gen_depth_path(folder_list[i], num)
@@ -115,27 +108,6 @@ def produce_list(folder_list, fd_train_list, fd_val_train_list):
     return total
 
 def gen_list(fd_train_list, fd_val_train_list):
-    #folder_list = ['0000', '0004', '0006', '0007', '0014', '0018', '0019', '0020', '0024',
-    #'0025', '0030', '0031', '0038', '0041', '0047', '0049', '0051', '0052', '0054', '0057',
-    #'0068', '0073', '0074', '0075', '0077', '0079', '0082', '0083', '0090', '0093', '0094',
-    #'0095', '0099', '0102', '0109', '0110', '0112', '0116', '0117', '0123', '0128', '0131',
-    #'0133', '0138', '0145', '0146', '0147', '0149', '0151']
-    #folder_list = ['0000', '0004', '0006', '0014', '0019', '0020',
-    #'0030', '0031', '0038', '0047', '0049', '0051', '0052', '0054', '0057',
-    #'0079', '0082', '0083', '0090', '0094',
-    #'0095', '0109', '0110', '0112', '0117', '0128',
-    #'0133', '0138', '0145', '0149', '0151']
-    # trainlist 3
-    #folder_list = ['0000', '0005', '0006', '0007', '0014', '0019', '0020', '0024', '0025', '0038', '0047', '0049',
-    #               '0051', '0052', '0054','0082', '0083', '0094', '0095', '0102', '0109', '0110', '0112', '0128', '0133', '0138', '0149',
-    #              '0161', '0168', '0172', '0174', '0176', '0180',
-    #               '0181', '0187', '0189', '0192', '0194', '0200', '0202', '0203', '0206', '0210', '0212', '0218',
-    #               '0219', '0226', '0227', '0230', '0231', '0233',
-    #              '0243', '0253', '0254', '0255', '0262', '0266', '0269', '0270', '0272', '0274', '0287', '0290', '0291', '0296', '0297', '0298', '0299',
-    #               '0300', '0301', '0302', '0303', '0313', '0318',
-    #               '0320', '0323', '0324', '0325', '0326', '0328', '0332', '0334', '0335', '0338', '0339', '0340',
-    #               '0342', '0345', '0346']
-    # trainlist 4
     folder_list = ['0000', '0005', '0006', '0014', '0019', '0020', '0025', '0038', '0047', '0049', 
                     '0051','0082', '0083', '0094', '0095',  '0109', '0110', '0112', '0128', '0133', 
                     '0138', '0149', '0161', '0174', '0176', '0180', '0181', '0189', '0192', '0194', 
