@@ -36,7 +36,7 @@ To enable our UV map optimization, you have to install [DensePose](https://githu
 
 
 ## Train and Test the model by running:
-0. Install the JackFramework lib from Github (https://github.com/Archaic-Atom/JackFramework)
+0. Install the [JackFramework](https://github.com/Archaic-Atom/JackFramework)
 ```
 $ cd JackFramework/
 $ ./install.sh
