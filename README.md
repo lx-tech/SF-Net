@@ -5,7 +5,7 @@ Authors: Xing Li, Yangyu Fan, Di Xu, Wenqing He, Guoyun Lv, Shiya Liu.
 
 ![](asset/pipeline.png)
 ---
-### Software Environment
+## Software Environment
 1. OS Environment
 ```
 cudaToolKit == 11.3
@@ -21,10 +21,21 @@ opencv = 3.4
 PIL = 5.1
 ```
 ---
-### Hardware Environment
+
+## Hardware Environment
 The framework only can be used in GPUs.
 
-### Train the model by running:
+## Run on Thuman Datasets
+### Preprocess
+Download the [Dataset](https://github.com/ytrock/THuman2.0-Dataset) and unzip it to some ROOT. 
+### Render Images
+To generate training and testing datasets, you have to install [PIFu](https://github.com/shunsukesaito/PIFu) to render color and depth images.
+
+### Extract UV maps
+To enable our UV map optimization, you have to install [DensePose](https://github.com/facebookresearch/detectron2/tree/main/projects/DensePose).
+
+
+## Train and Test the model by running:
 0. Install the JackFramework lib from Github (https://github.com/Archaic-Atom/JackFramework)
 ```
 $ cd JackFramework/
@@ -34,9 +45,7 @@ $ ./install.sh
 1. Get the Training list or Testing list （You need rewrite the code by your path, and my related demo code can be found in Source/Tools/genrate_thuman_****_path.py）
 ```
 $ python ./Scripts/generate_thuman_training_path.py
-```
 or
-```
 $ python ./Scripts/generate_thuman_testing_path.py
 ```
 
